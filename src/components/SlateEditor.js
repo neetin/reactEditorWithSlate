@@ -36,10 +36,11 @@ function CodeNode(props) {
 function Todo(props) {
     return (
         <div {...props.attributes} className="block block-todo">
-            <span>{props.children}</span>
+            <span>{props.children} </span>
         </div>
     )
 }
+
 function MarkHotkey(options) {
     // Grab our options from the ones passed in.
     const { type, key } = options
@@ -66,6 +67,7 @@ const plugins = [
     MarkHotkey({ key: 'i', type: 'italic' }),
     MarkHotkey({ key: '~', type: 'strikethrough' }),
     MarkHotkey({ key: 'u', type: 'underline' }),
+    MarkHotkey({ key: '/', type: 'todo' }),
 ]
 
 export default class SlateEditor extends Component {
@@ -97,7 +99,7 @@ export default class SlateEditor extends Component {
     }
 
     // Add a `renderMark` method to render marks.
-    renderMark = (props, _editor, next) => {
+    renderMark = (props, editor, next) => {
         switch (props.mark.type) {
             case 'bold':
                 return <strong>{props.children}</strong>
@@ -110,14 +112,18 @@ export default class SlateEditor extends Component {
                 return <del>{props.children}</del>
             case 'underline':
                 return <u>{props.children}</u>
+            case 'todo':
+                return <Todo>{props.children}</Todo>
             default:
+
                 return next()
         }
     }
 
-    onKeyDown(event, editor, next) {
+    onKeyDown(event, _editor, next) {
         if (event.key == 'Enter') {
-            editor.splitBlock()
+            // editor.splitBlock()
+            return next()
         } else {
             return next()
         }
@@ -131,7 +137,7 @@ export default class SlateEditor extends Component {
             nodes: [
                 {
                     object: 'text',
-                    text: text,
+                    text: text + ' ',
                 },
             ],
 
@@ -157,7 +163,6 @@ export default class SlateEditor extends Component {
                 })
             }
         } else if (e.target.name === 'resultOption') {
-            console.log('sdsjdjks')
             this.addNode(e.target.value)
         }
     }
@@ -172,6 +177,7 @@ export default class SlateEditor extends Component {
                         onChange={this.onChange}
                         renderMark={this.renderMark}
                         renderBlock={this.renderBlock}
+                        onKeyDown={this.onKeyDown}
                         ref='editor'
                     />
                 </div>

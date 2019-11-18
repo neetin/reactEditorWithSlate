@@ -32,6 +32,7 @@ select {
 
 
 .block {
+  display: inline-block;
   margin: 5px 3px;
 }
 
