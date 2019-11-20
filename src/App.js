@@ -10,7 +10,7 @@ import mfa from './images/mfa.png'
 import riskEngine from './images/riskEngine.png'
 import sso from './images/sso.png'
 
-const options = [
+const connections = [
   { id: '1', image: auth, text: 'Authenticated' },
   { id: '2', image: notAuth, text: 'Not Authenticated' },
   { id: '3', image: mfa, text: 'Multi Factor Authentication' },
@@ -22,7 +22,7 @@ const options = [
 function App() {
   return (
     <div className="container">
-      <TestEditor options={options} />
+      <TestEditor options={connections} />
     </div>
   );
 }

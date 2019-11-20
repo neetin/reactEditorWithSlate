@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { Grow, Paper, Popper, MenuItem, MenuList } from '@material-ui/core';
 import Icon from '@material-ui/core/Icon';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 class Dropdown extends React.Component {
 
@@ -48,7 +49,7 @@ class Dropdown extends React.Component {
                     {
                         selectedOption ?
                             <img src={selectedOption.image} width="23" alt="connection-icon" />
-                            : <Icon>add_circle</Icon>
+                            : <AddCircleOutlineIcon />
                     }
                 </Button>
                 <Popper
