@@ -11,3 +11,77 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.editor {
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    cursor: text;
+    padding: 15px 30px;
+    border-radius: 2px;
+    margin: 10px 150px;
+    box-shadow: inset 0px 1px 8px -3px #ABABAB;
+    background: #fefefe;
+    font-size: 1.1em;
+}
+Select {
+    background: #345678 ;
+    padding: 4px;
+    color: white;
+    border: #345678;
+    margin: 5px;
+}
+
+Select:active {
+    outline: none;
+    border: none;
+    border: #345678;
+}
+Select:focus { outline:0; border: #345678 }
+
+body {
+    background: #efefef;
+}
+.atomic {
+    color: #999;
+    font-family: 'Hoefler Text', Georgia, serif;
+    font-style: italic;
+}
+
+.editor :global(.public-DraftEditor-content) {
+    min-height: 140px;
+}
+
+body {
+    color: #666666;
+}
+
+.draftJsEmojiPlugin__emojiSelectButton__3sPol {
+    margin-right: 100px;
+}
+
+
+.btn {
+    border: 1px solid #dddddd;
+    background-color: #ffffff;
+    color: #888888;
+    padding: 4px 18px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.var {
+    background: #ffffff;
+    color: #999999;
+    padding: 7px;
+    margin-left: 20px;
+    border: 1px solid #dddddd;
+    cursor: pointer;
+    border-radius: 5%;
+}
+
+.var:active {
+    outline: none;
+    border: none;
+}
+.var:focus {outline:0;}

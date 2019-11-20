@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "draft-js": "^0.11.2",
+    "draft-js-inline-toolbar-plugin": "^3.0.1",
+    "draft-js-plugins-editor": "^3.0.0",
+    "draft-js-side-toolbar-plugin": "^3.0.2",
+    "draft-js-static-toolbar-plugin": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
@@ -14,7 +18,7 @@
     "slate-react": "^0.22.10"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
