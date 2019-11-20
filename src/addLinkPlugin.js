@@ -3,7 +3,6 @@ import {
     RichUtils,
     KeyBindingUtil,
     EditorState,
-    CompositeDecorator
 } from "draft-js";
 
 export const linkStrategy = (contentBlock, callback, contentState) => {

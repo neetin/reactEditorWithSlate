@@ -1,0 +1,17 @@
+.select {
+    margin-left: 5px;
+    height: 36px;
+    width: 300px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+    border: solid 1px #c6c6c6;
+    background-color: #ffffff;
+    padding: 5px;
+}
+
+.select:active {
+    outline: none;
+    border: none;
+    border: #345678;
+}
+.select:focus { outline:0; border: solid 1px #c6c6c6; }

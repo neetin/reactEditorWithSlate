@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { EditorState, RichUtils, convertToRaw, Modifier, convertFromRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 
@@ -11,6 +11,8 @@ import 'draft-js-side-toolbar-plugin/lib/plugin.css';
 
 import addLinkPlugin from './addLinkPlugin'
 import { optionResults } from './options'
+import Dropdown from './components/Dropdown';
+import CustomizedSelects from './components/Select';
 
 // inline toolbar plugin
 const inlineToolbarPlugin = createInlineToolbarPlugin();
@@ -22,14 +24,15 @@ const { SideToolbar } = sideToolbarPlugin;
 
 const initialContent = localStorage.getItem('content')
 
-class TestEditor extends Component {
+class TestEditor extends PureComponent {
 
     constructor(props) {
         super(props)
         this.state = {
             editorState: initialContent ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialContent))) : EditorState.createEmpty(),
             disabled: true,
-            optionValues: []
+            optionValues: [],
+            seletedOption: ''
         }
     }
 
@@ -74,10 +77,9 @@ class TestEditor extends Component {
         }
     };
 
-
-    handleSlectChange = (e) => {
-        if (e.target.name === 'selectOption') {
-            const result = optionResults.filter(option => option.optionId === parseInt(e.target.value))
+    handleOptionSelect = (item) => {
+        if (item) {
+            const result = optionResults.filter(option => option.optionId === parseInt(item.id))
             if (result.length > 0) {
                 this.setState({
                     disabled: false,
@@ -89,9 +91,15 @@ class TestEditor extends Component {
                     optionValues: []
                 })
             }
-        } else if (e.target.name === 'resultOption') {
+        }
+    }
+
+    handleSlectChange = (e) => {
+        if (e.target.value === undefined || e.target.value === '') return
+        if (e.target.name === 'resultOption') {
             const obj = this.state.optionValues.find(opt => opt.value === e.target.value)
-            this.handleVariable(e.target.value, obj)
+            this.setState({ seletedOption: obj.value })
+            this.handleVariable(obj.value)
         }
     }
 
@@ -102,7 +110,7 @@ class TestEditor extends Component {
 
         let entity = contentState.createEntity('LINK', 'IMMUTABLE', { url: 'http://google.com' })
         let entityKey = entity.getLastCreatedEntityKey()
-        const textWithEntity = Modifier.insertText(contentState, selection, `{{ ${value}.name }}`, null, entityKey)
+        const textWithEntity = Modifier.insertText(contentState, selection, `{{ ${value} }}`, null, entityKey)
 
         this.onChange(EditorState.push(editorState, textWithEntity, 'insert-characters'))
     }
@@ -111,43 +119,33 @@ class TestEditor extends Component {
         const raw = convertToRaw(this.state.editorState.getCurrentContent())
         const json = JSON.stringify(raw, null, 1)
         return (
-            <div className="editor">
-                <div style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    <Editor
-                        editorState={this.state.editorState}
-                        plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin]}
-                        onChange={this.onChange}
-                        handleKeyCommand={this.handleKeyCommand}
-                        customStyleMap={this.styleMap}
-                        blockStyleFn={this.myBlockStyleFn}
+            <div style={{ padding: "10px", border: "1px solid #ddd" }}>
+                <Editor
+                    editorState={this.state.editorState}
+                    plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin]}
+                    onChange={this.onChange}
+                    handleKeyCommand={this.handleKeyCommand}
+                    customStyleMap={this.styleMap}
+                    blockStyleFn={this.myBlockStyleFn}
+                />
+                <InlineToolbar />
+                <SideToolbar />
+                <div style={{ border: "1px solid #ddd", padding: "10px", display: 'flex' }}>
+                    <Dropdown
+                        options={this.props.options}
+                        handleSelect={this.handleOptionSelect}
                     />
-                    <InlineToolbar />
-                    <SideToolbar />
-                    <div style={{ border: "1px solid #ddd", padding: "10px" }}>
-                        <select onChange={this.handleSlectChange} name="selectOption">
-                            <option disabled selected>select one</option>
-                            <option value={1}>Authenticated</option>
-                            <option value={2}>Not Authenticated</option>
-                            <option value={3}>Multi Factor Authentication</option>
-                            <option value={4}>Risk Engine</option>
-                            <option value={5}>Location Policy</option>
-                            <option value={6}>Single SignOn</option>
-                        </select>
-
-                        <select disabled={this.state.disabled} name="resultOption" onChange={this.handleSlectChange}>
-                            <option selected disabled>--select one option---</option>
-                            {
-                                this.state.optionValues.map(option => (
-                                    <option value={option.value} key={option.id}>{option.value}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                    <div>
-                        <pre>
-                            <code>{json}</code>
-                        </pre>
-                    </div>
+                    <CustomizedSelects
+                        disabled={this.state.disabled}
+                        options={this.state.optionValues}
+                        onChange={this.handleSlectChange}
+                        selectedOption={this.state.seletedOption}
+                    />
+                </div>
+                <div>
+                    <pre>
+                        <code>{json}</code>
+                    </pre>
                 </div>
             </div>
         )
