@@ -7,7 +7,10 @@ import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
 
 import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
 import 'draft-js-side-toolbar-plugin/lib/plugin.css';
-
+import createCodeEditorPlugin from 'draft-js-code-editor-plugin';
+import Prism from 'prismjs';
+import createPrismPlugin from 'draft-js-prism-plugin';
+import "prismjs/themes/prism.css"; // add prism.css to add highlights 
 
 import addLinkPlugin from './addLinkPlugin'
 import { optionResults } from './options'
@@ -71,6 +74,28 @@ class TestEditor extends PureComponent {
     };
 
     myBlockStyleFn = (contentBlock) => {
+
+        const block = contentBlock
+        const key = contentBlock.getKey()
+        if (block.getType() !== "code-block") return;
+
+        // Replace the code block with a new one with the data.language changed to "javascript"
+        const data = block.getData().merge({ language: 'javascript' });
+        const newBlock = block.merge({ data });
+        const newContentState = this.state.editorState.getCurrentContent().merge({
+            blockMap: this.state.editorState.getCurrentContent().getBlockMap().set(key, newBlock),
+            selectionAfter: this.state.editorState.getSelection()
+        })
+
+        let editorState = this.state.editorState
+        // Now that code block will be highlighted as JavaScript!
+        this.setState({
+            editorState: EditorState.push(this.state.editorState, newContentState, "change-block-data")
+        })
+
+
+
+
         switch (contentBlock.getType()) {
             case 'code-block': return 'language-javascript';
             case 'atomic': return 'atomic';
@@ -126,10 +151,11 @@ class TestEditor extends PureComponent {
             <div style={{ padding: "10px", border: "1px solid #ddd", position: 'relative' }}>
                 <div style={{ position: 'relative' }}>
                     <div className="editor-container">
-
                         <Editor
                             editorState={this.state.editorState}
-                            plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin]}
+                            plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin, createPrismPlugin({
+                                prism: Prism
+                            }), createCodeEditorPlugin()]}
                             onChange={this.onChange}
                             handleKeyCommand={this.handleKeyCommand}
                             customStyleMap={this.styleMap}
