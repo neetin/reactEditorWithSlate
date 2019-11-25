@@ -26,13 +26,28 @@ const sideToolbarPlugin = createSideToolbarPlugin();
 const { SideToolbar } = sideToolbarPlugin;
 
 const initialContent = localStorage.getItem('content')
-
+let contentState
+if (initialContent) {
+    contentState = JSON.parse(initialContent)
+} else {
+    contentState = {
+        entityMap: {},
+        blocks: [{
+            key: '18ql9',
+            text: '',
+            type: 'code-block',
+            depth: 0,
+            inlineStyleRanges: [],
+            entityRanges: [],
+        }],
+    };
+}
 class TestEditor extends PureComponent {
 
     constructor(props) {
         super(props)
         this.state = {
-            editorState: initialContent ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialContent))) : EditorState.createEmpty(),
+            editorState: EditorState.createWithContent(convertFromRaw(contentState)),
             disabled: true,
             optionValues: [],
             seletedOption: '',
@@ -73,8 +88,12 @@ class TestEditor extends PureComponent {
 
     };
 
-    myBlockStyleFn = (contentBlock) => {
+    componentDidMount() {
+        const editorState = this.refs.editor
+        console.log(editorState)
+    }
 
+    myBlockStyleFn = (contentBlock) => {
         const block = contentBlock
         const key = contentBlock.getKey()
         if (block.getType() !== "code-block") return;
@@ -92,9 +111,6 @@ class TestEditor extends PureComponent {
         this.setState({
             editorState: EditorState.push(this.state.editorState, newContentState, "change-block-data")
         })
-
-
-
 
         switch (contentBlock.getType()) {
             case 'code-block': return 'language-javascript';
@@ -160,6 +176,7 @@ class TestEditor extends PureComponent {
                             handleKeyCommand={this.handleKeyCommand}
                             customStyleMap={this.styleMap}
                             blockStyleFn={this.myBlockStyleFn}
+                            ref="editor"
                         />
                     </div>
                     <span className="toggle-span" onClick={this.toggleDropdowns}>{"{}"}</span>
