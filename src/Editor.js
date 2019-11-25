@@ -32,7 +32,8 @@ class TestEditor extends PureComponent {
             editorState: initialContent ? EditorState.createWithContent(convertFromRaw(JSON.parse(initialContent))) : EditorState.createEmpty(),
             disabled: true,
             optionValues: [],
-            seletedOption: ''
+            seletedOption: '',
+            showDropdowns: false
         }
     }
 
@@ -115,38 +116,50 @@ class TestEditor extends PureComponent {
         this.onChange(EditorState.push(editorState, textWithEntity, 'insert-characters'))
     }
 
+    toggleDropdowns = (e) => {
+        this.setState({ showDropdowns: !this.state.showDropdowns })
+    }
     render() {
         const raw = convertToRaw(this.state.editorState.getCurrentContent())
         const json = JSON.stringify(raw, null, 1)
         return (
-            <div style={{ padding: "10px", border: "1px solid #ddd" }}>
-                <Editor
-                    editorState={this.state.editorState}
-                    plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin]}
-                    onChange={this.onChange}
-                    handleKeyCommand={this.handleKeyCommand}
-                    customStyleMap={this.styleMap}
-                    blockStyleFn={this.myBlockStyleFn}
-                />
+            <div style={{ padding: "10px", border: "1px solid #ddd", position: 'relative' }}>
+                <div style={{ position: 'relative' }}>
+                    <div className="editor-container">
+
+                        <Editor
+                            editorState={this.state.editorState}
+                            plugins={[inlineToolbarPlugin, sideToolbarPlugin, addLinkPlugin]}
+                            onChange={this.onChange}
+                            handleKeyCommand={this.handleKeyCommand}
+                            customStyleMap={this.styleMap}
+                            blockStyleFn={this.myBlockStyleFn}
+                        />
+                    </div>
+                    <span className="toggle-span" onClick={this.toggleDropdowns}>{"{}"}</span>
+                </div>
                 <InlineToolbar />
                 <SideToolbar />
-                <div style={{ border: "1px solid #ddd", padding: "10px", display: 'flex' }}>
-                    <Dropdown
-                        options={this.props.options}
-                        handleSelect={this.handleOptionSelect}
-                    />
-                    <CustomizedSelects
-                        disabled={this.state.disabled}
-                        options={this.state.optionValues}
-                        onChange={this.handleSlectChange}
-                        selectedOption={this.state.seletedOption}
-                    />
-                </div>
-                <div>
+                {
+                    this.state.showDropdowns &&
+                    <div style={{ border: "1px solid #ddd", padding: "10px", display: 'flex' }}>
+                        <Dropdown
+                            options={this.props.options}
+                            handleSelect={this.handleOptionSelect}
+                        />
+                        <CustomizedSelects
+                            disabled={this.state.disabled}
+                            options={this.state.optionValues}
+                            onChange={this.handleSlectChange}
+                            selectedOption={this.state.seletedOption}
+                        />
+                    </div>
+                }
+                {/* <div>
                     <pre>
                         <code>{json}</code>
                     </pre>
-                </div>
+                </div> */}
             </div>
         )
     }
