@@ -13,7 +13,7 @@
     "draft-js-side-toolbar-plugin": "^3.0.2",
     "draft-js-static-toolbar-plugin": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
-    "prismjs": "^1.17.1",
+    "prismjs": "^1.23.0",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
